@@ -1,0 +1,36 @@
+#!/usr/bin/python
+class QuickUnion:
+    '''
+    Week 1, Union Find
+    weighted quick union with path compression
+    '''
+
+    def __init__(self,n):
+        self.father = [] # quick union
+        self.size = [] # wight
+        for i in range(n):
+            self.father.append(i)
+            self.size.append(1)
+        
+    
+    def root(self,i):
+        while i != self.father[i]:
+            self.father[i] = self.father[self.father[i]] # path compression
+            i = self.father[i]
+        return i
+
+    def connected(self,p,q):
+        return self.root(p) == self.root(q)
+
+    def union(self,p,q):
+        i = self.root(p)
+        j = self.root(q)
+        if size[i] < size[j]:
+            self.father[i] = j
+            self.size[j] += self.size[i]
+        else:
+            self.father[j] = i
+            self.size[i] += self.size[j]
+
+if __name__ == '__main__':
+    qu = QuickUnion(100)
