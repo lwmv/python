@@ -1,0 +1,152 @@
+#!/usr/bin/python
+# Merge Sort
+class MergeSort:
+    count = 0
+    def nonRecursiveSort(a): #非递归版本, bottom-up
+        n = len(a)
+        aux = [0] * len(a)
+        sz = 1
+        while sz < n:
+            low = 0
+            while low < n-sz:
+                mid = low+sz-1
+                high = min([low+2*sz-1,n-1])
+                MergeSort.merge(a,aux,low,mid,high)
+                low += 2*sz
+            sz *= 2
+
+    def sort(a): #递归版本, top-down
+        aux = [0] * len(a)
+        MergeSort.msort(a,aux,0,len(a)-1)
+
+    def msort(a, aux, low, high):
+        if high <= low:
+            return
+        mid = low + (high-low)//2 # floor division
+        MergeSort.msort(a,aux,low,mid)
+        MergeSort.msort(a,aux,mid+1,high)
+        # Improvement II
+        #if a[mid] <= a[mid+1]:
+        #    return
+        MergeSort.merge(a,aux,low,mid,high)
+
+
+    def merge(a, aux, low, mid, high):
+        #assert MergeSort.isSorted(a,low,mid),'Merging part not sorted!'
+        #assert MergeSort.isSorted(a,mid+1,high),'Merging part not sorted!'
+
+        for k in range(low,high+1):
+            aux[k] = a[k]
+
+        i = low
+        j = mid + 1
+        #k = low
+        for k in range(low,high+1):
+            if i > mid:
+                a[k] = aux[j]
+                j += 1
+            elif j > high:
+                a[k] = aux[i]
+                i += 1
+            elif aux[j] < aux[i]:
+                a[k] = aux[j]
+                j += 1
+            else:
+                a[k] = aux[i]
+                i += 1
+        
+        #assert MergeSort.isSorted(a,low,high)
+    
+
+    
+
+################# 我是 indexSort 分割线 ##################
+    # 下面是 indexSort，所有函数名以 i 开头
+    def iNonRecursiveSort(a):
+        n = len(a)
+        index = list(range(n))
+        aux = [0] * n
+        sz = 1
+        while sz < n:
+            low = 0
+            while low < n-sz:
+                mid = low + sz -1
+                high = min(low+2*sz-1,n-1)
+                MergeSort.imerge(a,index,aux,low,mid,high)
+                low += 2*sz
+            sz *= 2
+        return index
+
+    def isort(a):
+        n = len(a)
+        index = list(range(n))
+        aux = [0] * n
+        MergeSort.imsort(a,index,aux,0,n-1)
+        return index
+
+    def imsort(a,index,aux,low,high):
+        if low>=high:
+            return
+        mid = low + (high-low)//2
+        MergeSort.imsort(a,index,aux,low,mid)
+        MergeSort.imsort(a,index,aux,mid+1,high)
+        # Improvement II
+        if a[index[mid]] <= a[index[mid+1]]:
+            return
+        MergeSort.imerge(a,index,aux,low,mid,high)
+    
+    def imerge(a,index,aux,low,mid,high):
+        for k in range(low,high+1):
+            aux[k] = index[k]
+        
+        i = low
+        j = mid+1
+        #k = low
+        for k in range(low,high+1):
+            if i>mid:
+                index[k] = aux[j]
+                j += 1
+            elif j>high:
+                index[k] = aux[i]
+                i += 1
+            elif a[aux[j]] < a[aux[i]]:
+                index[k] = aux[j]
+                j += 1
+            else:
+                index[k] = aux[i]
+                i += 1
+    
+
+    def isSorted(a,low,high):
+        for i in range(low,high):
+            if a[i] > a[i+1]:
+                return False
+        else:
+            return True
+
+if __name__ == '__main__':
+    import random
+    a = list(range(0,21))
+    random.shuffle(a)
+    b = a[:]
+    c = a[:]
+    d = a[:]
+    ori = a[:]
+
+    print('ori ',end=' ')
+    print(ori)
+
+    print('R   ',end=' ')
+    MergeSort.sort(a)
+    print(a)
+
+    print('nR  ',end=' ')
+    MergeSort.nonRecursiveSort(b)
+    print(b)
+
+    print('iR  ',end=' ')
+    MergeSort.isort(c)
+    print([ori[i] for i in MergeSort.isort(c)])
+
+    print('inR ',end=' ')
+    print([ori[i] for i in  MergeSort.iNonRecursiveSort(d) ])
